@@ -1,0 +1,42 @@
+type Word {
+  value: String!
+  count: Int!
+  day: Day! @relation(name: "SUBMITTED_ON", direction: "OUT")
+}
+
+type Day {
+  date: Date!
+  words: [Word!]! @relation(name: "SUBMITTED_ON", direction: "IN")
+}
+
+type Query {
+  Word(filter: WordFilter!): [Word!]!
+    @cypher(
+      statement: """
+      MATCH (word :Word) -[SUBMITTED_ON]-> (day :Day { date: date($filter.day) })
+      RETURN word
+      """
+    )
+}
+
+type Mutation {
+  CreateWord(value: String, day: String!): Word
+    @cypher(
+      statement: """
+      MERGE (neoDay :Day { date: date($day) })
+      WITH neoDay
+      MERGE (word :Word { value: $value }) -[:SUBMITTED_ON]-> (neoDay)
+      ON CREATE SET word.count = 1
+      ON MATCH SET word.count = word.count + 1
+      RETURN word
+      """
+    )
+}
+
+input WordFilter {
+  day: String!
+}
+
+type CreateWordPayload {
+  word: Word
+}

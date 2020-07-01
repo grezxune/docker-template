@@ -1,0 +1,12 @@
+FROM neo4j:3.5.16-enterprise
+
+ENV NEO4J_AUTH=neo4j/letmein \
+    APOC_VERSION=4.0 \
+    GRAPHQL_VERSION=3.5.0.4
+
+ENV NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+ENV NEO4JLABS_PLUGINS='["apoc", "graphql"]'
+
+EXPOSE 7474 7473 7687
+
+CMD ["neo4j"]
