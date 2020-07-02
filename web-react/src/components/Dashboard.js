@@ -18,9 +18,6 @@ export default () => {
       <div style={{ margin: '20px 0px' }}>
         <MoodInput />
       </div>
-      <Typography variant={'h6'} color={'primary'}>
-        {getDay()} (today)
-      </Typography>
       <WordCloud day={getDay()} />
       <PreviousCloudList />
     </div>

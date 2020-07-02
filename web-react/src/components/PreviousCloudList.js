@@ -39,9 +39,6 @@ export default () => {
           {data.Day.filter(({ date: { formatted } }) => formatted !== day).map(
             ({ date: { formatted } }) => (
               <div key={`wordcloud-${formatted}`}>
-                <Typography variant={'body2'} color={'primary'}>
-                  {formatted}
-                </Typography>
                 <WordCloud day={formatted} />
               </div>
             )

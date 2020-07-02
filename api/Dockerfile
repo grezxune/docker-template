@@ -8,4 +8,4 @@ COPY . /app
 
 EXPOSE 4001
 
-CMD ["yarn", "start"]
+CMD ["yarn", "start:dev"]
