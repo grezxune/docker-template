@@ -4,7 +4,6 @@ import MoodInput from './MoodInput'
 import WordCloud from './WordCloud'
 import getDay from '../utils/getDay'
 import PreviousCloudList from './PreviousCloudList'
-import GoogleAd from './GoogleAd'
 
 export default () => {
   return (

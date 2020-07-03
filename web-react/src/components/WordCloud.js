@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import Wordcloud from 'wordcloud'
 import { Typography, Paper } from '@material-ui/core'
@@ -64,7 +64,6 @@ export default ({ day }) => {
   const resizeCanvas = () => {
     const ctx = canvas.current.getContext('2d')
     ctx.canvas.width = window.innerWidth * 0.9
-    console.log(ctx.canvas.width)
   }
 
   const isToday = data && data.day?.date.formatted === getDay()
