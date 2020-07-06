@@ -1,8 +1,8 @@
-import { typeDefs } from './graphql-schema'
-import { ApolloServer, gql } from 'apollo-server-express'
+import typeDefs from './graph/typedefs'
+import resolvers from './graph/resolvers'
+import { ApolloServer, makeExecutableSchema } from 'apollo-server-express'
 import express from 'express'
 import neo4j from 'neo4j-driver'
-import { makeAugmentedSchema } from 'neo4j-graphql-js'
 import dotenv from 'dotenv'
 import { initializeDatabase } from './initialize'
 
@@ -19,17 +19,9 @@ const app = express()
  * https://grandstack.io/docs/neo4j-graphql-js-api.html#makeaugmentedschemaoptions-graphqlschema
  */
 
-const schema = makeAugmentedSchema({
+const schema = makeExecutableSchema({
   typeDefs,
-  resolvers: {},
-  config: {
-    query: {
-      exclude: [],
-    },
-    mutation: {
-      exclude: [],
-    },
-  },
+  resolvers,
 })
 
 /*
@@ -79,9 +71,6 @@ const server = new ApolloServer({
       req,
       driver,
       neo4jDatabase: process.env.NEO4J_DATABASE,
-      cypherParams: {
-        testData: 'HERE',
-      },
     }
   },
   schema: schema,
