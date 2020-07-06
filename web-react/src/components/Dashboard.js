@@ -1,11 +1,17 @@
 import React from 'react'
+import { useQuery, gql } from '@apollo/client'
 import { Typography } from '@material-ui/core'
-import MoodInput from './MoodInput'
-import WordCloud from './WordCloud'
-import getDay from '../utils/getDay'
-import PreviousCloudList from './PreviousCloudList'
 
 export default () => {
+  const { loading, data, error } = useQuery(gql`
+    query Test {
+      day {
+        date
+      }
+    }
+  `)
+
+  console.log(data, error)
   return (
     <div style={{ textAlign: 'center' }}>
       <Typography variant={'h1'} color={'primary'}>
@@ -14,11 +20,9 @@ export default () => {
       <Typography variant={'h3'} color={'primary'}>
         How is the world feeling today?
       </Typography>
-      <div style={{ margin: '20px 0px' }}>
-        <MoodInput />
-      </div>
-      <WordCloud day={getDay()} />
-      <PreviousCloudList />
+      <Typography variant={'h3'} color={'primary'}>
+        {data?.day?.date}
+      </Typography>
     </div>
   )
 }
