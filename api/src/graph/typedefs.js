@@ -1,3 +1,6 @@
-import zzz from './nodes/zzz/schema'
+import base from './nodes/base/schema'
 
-export default [zzz]
+import auth from './nodes/auth/schema'
+import user from './nodes/user/schema'
+
+export default [base, auth, user]

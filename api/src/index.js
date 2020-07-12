@@ -2,9 +2,13 @@ import typeDefs from './graph/typedefs'
 import resolvers from './graph/resolvers'
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express'
 import express from 'express'
-import neo4j from 'neo4j-driver'
 import dotenv from 'dotenv'
-import { initializeDatabase } from './initialize'
+import {
+  IsAuthenticatedDirective,
+  HasRoleDirective,
+  HasScopeDirective,
+} from 'graphql-auth-directives'
+import driver from './db/neo4j'
 
 // set environment variables from .env
 dotenv.config()
@@ -22,42 +26,12 @@ const app = express()
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
+  schemaDirectives: {
+    isAuthenticated: IsAuthenticatedDirective,
+    // hasRole: HasRoleDirective,
+    hasScope: HasScopeDirective,
+  },
 })
-
-/*
- * Create a Neo4j driver instance to connect to the database
- * using credentials specified as environment variables
- * with fallback to defaults
- */
-const driver = neo4j.driver(
-  process.env.NEO4J_URI || 'bolt://localhost:7687',
-  neo4j.auth.basic(
-    process.env.NEO4J_USER || 'neo4j',
-    process.env.NEO4J_PASSWORD || 'neo4j'
-  ),
-  {
-    encrypted: process.env.NEO4J_ENCRYPTED ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF',
-  }
-)
-
-/*
- * Perform any database initialization steps such as
- * creating constraints or ensuring indexes are online
- *
- */
-const init = async (driver) => {
-  await initializeDatabase(driver)
-}
-
-/*
- * We catch any errors that occur during initialization
- * to handle cases where we still want the API to start
- * regardless, such as running with a read only user.
- * In this case, ensure that any desired initialization steps
- * have occurred
- */
-
-init(driver)
 
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema
