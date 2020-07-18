@@ -1,79 +1,26 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  createHttpLink,
-  from,
-} from '@apollo/client'
-import { setContext } from '@apollo/client/link/context'
-import { TokenRefreshLink } from 'apollo-link-token-refresh'
-import jwtDecode from 'jwt-decode'
+import { ThemeProvider, createMuiTheme } from '@material-ui/core'
+import { ApolloProvider } from '@apollo/client'
 import { App } from './App'
-import { getAccessToken, setAccessToken } from './accessToken'
+import { client } from './apollo'
 
-const httpLink = createHttpLink({
-  uri: 'http://localhost:4001/graphql',
-  credentials: 'include',
-})
-
-const authLink = setContext((_, { headers }) => {
-  const token = getAccessToken()
-
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+const customTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#36454f',
     },
-  }
-})
-
-const tokenRefreshLink = new TokenRefreshLink({
-  accessTokenField: 'accessToken',
-  isTokenValidOrUndefined: () => {
-    const token = getAccessToken()
-
-    if (!token) {
-      return true
-    }
-
-    try {
-      const { exp } = jwtDecode(token)
-
-      if (Date.now() >= exp * 1000) {
-        return false
-      } else {
-        return true
-      }
-    } catch (e) {
-      return false
-    }
+    secondary: {
+      main: '#6ed3cf',
+    },
   },
-  fetchAccessToken: () => {
-    return fetch('http://localhost:4001/refresh_token', {
-      method: 'POST',
-      credentials: 'include',
-    })
-  },
-  handleFetch: (accessToken) => {
-    setAccessToken(accessToken)
-  },
-  handleError: (err) => {
-    console.warn('Your refresh token is invalid. Try to relogin')
-  },
-})
-
-const client = new ApolloClient({
-  // For some reason Typescript doesn't agree with the tokenRefreshLink type here
-  // @ts-ignore
-  link: from([tokenRefreshLink, authLink, httpLink]),
-  cache: new InMemoryCache(),
 })
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
+  <ThemeProvider theme={customTheme}>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </ThemeProvider>,
   document.getElementById('root')
 )

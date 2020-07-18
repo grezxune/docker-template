@@ -1,5 +1,6 @@
 import React from 'react'
 import { useUsersQuery } from '../generated/graphql'
+import { Layout } from '../components/Layout'
 
 interface Props {}
 
@@ -10,7 +11,7 @@ export const Home: React.FC<Props> = () => {
     return null
   }
   return (
-    <div>
+    <Layout>
       <div>Users:</div>
       <ul>
         {data.users.map((user) => (
@@ -19,6 +20,6 @@ export const Home: React.FC<Props> = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </Layout>
   )
 }

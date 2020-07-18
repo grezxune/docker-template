@@ -56,7 +56,7 @@ export class UserResolver {
   }
 
   @Query(() => User, { nullable: true })
-  async me(@Ctx() context: MyContext) {
+  async viewer(@Ctx() context: MyContext) {
     const authorization = context.req.headers['authorization']
 
     if (!authorization) {
