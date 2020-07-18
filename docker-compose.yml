@@ -13,7 +13,7 @@ services:
       - NEO4J_dbms_shell_enabled=true
 
   api:
-    build: ./api
+    build: ./server
     ports:
       - 4001:4001
     environment:
@@ -23,7 +23,7 @@ services:
       - GRAPHQL_LISTEN_PORT=4001
       - GRAPHQL_URI=http://api:4001/graphql
     volumes:
-      - ./api:/app
+      - ./server:/app
 
     links:
       - neo4j
@@ -31,7 +31,7 @@ services:
       - neo4j
 
   ui:
-    build: ./web-react
+    build: ./web
     ports:
       - 3000:3000
     environment:
@@ -39,7 +39,7 @@ services:
       - REACT_APP_GRAPHQL_URI=/graphql
       - PROXY=http://api:4001/graphql
     volumes:
-      - ./web-react:/app
+      - ./web:/app
 
     links:
       - api
