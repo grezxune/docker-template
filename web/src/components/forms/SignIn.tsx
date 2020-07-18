@@ -1,18 +1,31 @@
 import React, { useState } from 'react'
+import { RouteComponentProps } from 'react-router-dom'
+import { useQuery, gql } from '@apollo/client'
+import { Button, makeStyles, TextField } from '@material-ui/core'
+
 import {
   useLoginMutation,
   ViewerQuery,
   ViewerDocument,
 } from '../../generated/graphql'
-import { RouteComponentProps } from 'react-router-dom'
 import { setAccessToken } from '../../accessToken'
-import { useQuery, gql } from '@apollo/client'
 
-export const LoginForm: React.FC<RouteComponentProps> = ({ history }) => {
+const useStyles = makeStyles((theme) => ({
+  loginTitle: {
+    margin: `${theme.spacing(2)}px 0px`,
+  },
+  textInput: {
+    margin: `${theme.spacing(2)}px 0px`,
+  },
+  submitButton: {},
+}))
+
+export const SignInForm: React.FC<RouteComponentProps> = ({ history }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [login] = useLoginMutation()
-  const { data, loading, error } = useQuery(gql`
+  const classes = useStyles()
+  const { data } = useQuery(gql`
     query RedirectPathOnAuthentication {
       redirectPathOnAuthentication @client
     }
@@ -45,27 +58,34 @@ export const LoginForm: React.FC<RouteComponentProps> = ({ history }) => {
           setAccessToken(response?.data?.login.accessToken)
         }
 
-        console.log('Pushing this:', data?.redirectPathOnAuthentication)
         history.push(data?.redirectPathOnAuthentication || '/')
       }}
     >
-      <div>
-        <input
+      <div className={classes.textInput}>
+        <TextField
+          required={true}
+          type={'text'}
+          name={'email'}
           value={email}
-          type="email"
-          placeholder="email"
           onChange={(e) => setEmail(e.target.value)}
+          placeholder={'Email'}
         />
       </div>
-      <div>
-        <input
+      <div className={classes.textInput}>
+        <TextField
+          required={true}
+          type={'password'}
+          name={'password'}
           value={password}
-          type="password"
-          placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
+          placeholder={'Password'}
         />
       </div>
-      <button type="submit">Login</button>
+      <div className={classes.submitButton}>
+        <Button type={'submit'} color={'secondary'} variant={'contained'}>
+          Sign In
+        </Button>
+      </div>
     </form>
   )
 }

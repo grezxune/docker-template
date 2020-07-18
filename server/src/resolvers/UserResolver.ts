@@ -9,6 +9,7 @@ import {
   UseMiddleware,
   Int,
   FieldResolver,
+  Root,
 } from 'type-graphql'
 import { hash, compare } from 'bcryptjs'
 import { MyContext } from '../MyContext'
@@ -17,7 +18,7 @@ import { isAuth } from '../utils/isAuth'
 import { sendRefreshToken } from '../utils/sendRefreshToken'
 import { verify } from 'jsonwebtoken'
 import { User } from '../models/user'
-import { UserRepository } from '../repositories/userRepository'
+import { userRepository } from '../repositories'
 import { ApolloError } from 'apollo-server-express'
 
 @ObjectType()
@@ -29,10 +30,10 @@ class LoginResponse {
 }
 
 @Resolver(() => User)
-export class UserTypeResolver {
+export class UserFieldResolvers {
   @Field(() => String)
   @FieldResolver()
-  id(user: User): String {
+  id(@Root() user: User): String {
     return user.userId
   }
 }
@@ -40,19 +41,14 @@ export class UserTypeResolver {
 @Resolver()
 export class UserResolver {
   @Query(() => String)
-  hello() {
-    return 'Hi!'
-  }
-
-  @Query(() => String)
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth({}))
   bye(@Ctx() { payload }: MyContext) {
     return `Your user id is: ${payload!.userId}`
   }
 
   @Query(() => [User])
   async users() {
-    return new UserRepository().getAll()
+    return userRepository.getAll()
   }
 
   @Query(() => User, { nullable: true })
@@ -65,10 +61,8 @@ export class UserResolver {
 
     try {
       const token = authorization.split(' ')[1]
-      console.log('Token:', token)
       const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!)
-      console.log('Payload: ', payload)
-      return new UserRepository().getById(payload.userId)
+      return userRepository.getById(payload.userId)
     } catch (err) {
       console.log('Error in me query:', err)
       return null
@@ -81,7 +75,7 @@ export class UserResolver {
     @Arg('password') password: string,
     @Ctx() { res }: MyContext
   ): Promise<LoginResponse> {
-    const user = await new UserRepository().getByEmail(email)
+    const user = await userRepository.getByEmail(email)
 
     if (!user) {
       throw new ApolloError(`Invalid login.`)
@@ -110,8 +104,9 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth({}))
   async revokeRefreshTokensForUser(@Arg('userId', () => Int) userId: number) {
-    return new UserRepository().incrementTokenVersion(userId)
+    return userRepository.incrementTokenVersion(userId)
   }
 
   @Mutation(() => Boolean)
@@ -122,7 +117,7 @@ export class UserResolver {
     const hashedPassword = await hash(password, 12)
 
     try {
-      await new UserRepository().addUser({
+      await userRepository.addUser({
         email,
         password: hashedPassword,
       })

@@ -1,13 +1,13 @@
 import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 
-import RepositoryBase from '../repositoryBase'
+import { RepositoryBase } from '../repositoryBase'
 import { query } from '../db/neo4j/query'
 import { compare } from 'bcryptjs'
 import { User } from '../models/user'
 import { createAccessToken } from '../utils/auth'
 
-export class UserRepository extends RepositoryBase {
+class UserRepository extends RepositoryBase {
   constructor() {
     super(['User'], 'User')
   }
@@ -102,3 +102,5 @@ export class UserRepository extends RepositoryBase {
     }
   }
 }
+
+export const userRepository = new UserRepository()

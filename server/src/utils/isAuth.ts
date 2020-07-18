@@ -1,9 +1,13 @@
-import { MiddlewareFn } from 'type-graphql'
+import { MiddlewareFn, NextFn, ResolverData } from 'type-graphql'
 import { MyContext } from '../MyContext'
 import { verify } from 'jsonwebtoken'
 
-export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
+export const isAuth = ({ roles }: { roles?: string[] }) => (
+  { context }: ResolverData<MyContext>,
+  next: NextFn
+): Promise<MiddlewareFn<MyContext>> => {
   const authorization = context.req.headers['authorization']
+  console.log(roles)
 
   if (!authorization) {
     throw new Error('Not authenticated')

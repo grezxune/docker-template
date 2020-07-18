@@ -1,7 +1,7 @@
 import { query } from './db/neo4j/query'
 import { User } from './models/user'
 
-export default class RepositoryBase {
+export class RepositoryBase {
   labels: string[]
   optionalLabels?: string[]
   primaryLabel: string
@@ -39,7 +39,6 @@ export default class RepositoryBase {
       }: $id }) RETURN node, LABELS(node) as labels`,
       { id }
     )) as any
-    console.log(response)
 
     if (
       response &&

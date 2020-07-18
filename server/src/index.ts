@@ -3,13 +3,13 @@ import 'reflect-metadata'
 import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from 'type-graphql'
-import { UserResolver } from './resolvers/UserResolver'
+import { UserResolver, UserFieldResolvers } from './resolvers/UserResolver'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { verify } from 'jsonwebtoken'
 import { createAccessToken, createRefreshToken } from './utils/auth'
 import { sendRefreshToken } from './utils/sendRefreshToken'
-import { UserRepository } from './repositories/userRepository'
+import { userRepository } from './repositories'
 ;(async () => {
   const app = express()
   app.use(
@@ -35,10 +35,7 @@ import { UserRepository } from './repositories/userRepository'
       return res.send({ ok: false, accessToken: '' })
     }
 
-    console.log('TOKEN IN REFRESH TOKEN:', token)
-    console.log('PAYLOAD IN REFRESH TOKEN:', payload)
-    const user = await new UserRepository().getById(payload.userId)
-    console.log('USER IN REFRESH TOKEN:', user)
+    const user = await userRepository.getById(payload.userId)
 
     if (!user) {
       return res.send({ ok: false, accessToken: '' })
@@ -55,7 +52,7 @@ import { UserRepository } from './repositories/userRepository'
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [UserResolver, UserFieldResolvers],
     }),
     context: ({ req, res }) => ({
       req,

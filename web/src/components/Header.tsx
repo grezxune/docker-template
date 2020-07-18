@@ -17,12 +17,17 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexFlow: 'row nowrap',
     justifyContent: 'space-between',
+    alignItems: 'center',
     // [theme.breakpoints.up('xs')]: {
     //   justifyContent: 'flex-end',
     // },
     // [theme.breakpoints.down('xs')]: {
     //   justifyContent: 'space-between',
     // },
+  },
+  button: {
+    display: 'flex',
+    alignItems: 'center',
   },
 }))
 
@@ -46,11 +51,19 @@ export const Header = () => {
           {/* </Hidden> */}
           <Link
             href="/"
-            variant={'h4'}
+            variant={'button'}
             color={'secondary'}
-            style={{ textDecoration: 'none' }}
+            className={classes.button}
           >
             BitBelt
+          </Link>
+          <Link
+            href="/login"
+            variant={'button'}
+            color={'secondary'}
+            className={classes.button}
+          >
+            Login
           </Link>
         </Toolbar>
       </AppBar>

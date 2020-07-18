@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
 import { Person, ExitToApp, Home } from '@material-ui/icons'
 import { Link as RouterLink } from 'react-router-dom'
 import { useLogoutMutation, useViewerQuery } from '../generated/graphql'
@@ -44,6 +45,7 @@ export default ({
 }) => {
   const { loading, data, error } = useViewerQuery()
   const [logout, { client }] = useLogoutMutation()
+  const history = useHistory()
 
   const drawer = (
     <List>
@@ -58,10 +60,10 @@ export default ({
           <ListItem
             button
             onClick={async () => {
-              console.log('Logging out...')
               await logout()
               setAccessToken('')
               await client?.resetStore()
+              history.push('/')
             }}
           >
             <ListItemIcon>
