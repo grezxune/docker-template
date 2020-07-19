@@ -57,14 +57,46 @@ export const Header = () => {
           >
             BitBelt
           </Link>
-          <Link
-            href="/login"
-            variant={'button'}
-            color={'secondary'}
-            className={classes.button}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
-            Login
-          </Link>
+            {!data?.viewer ? (
+              <>
+                <Link
+                  href="/auth"
+                  variant={'button'}
+                  color={'secondary'}
+                  className={classes.button}
+                >
+                  Sign In
+                </Link>
+                <span>|</span>
+                <Link
+                  href="/auth/1"
+                  variant={'button'}
+                  color={'secondary'}
+                  className={classes.button}
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/userProfile"
+                  variant={'button'}
+                  color={'secondary'}
+                  className={classes.button}
+                >
+                  {data?.viewer.email}
+                </Link>
+              </>
+            )}
+          </div>
         </Toolbar>
       </AppBar>
 

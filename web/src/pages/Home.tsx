@@ -5,7 +5,11 @@ import { Layout } from '../components/Layout'
 interface Props {}
 
 export const Home: React.FC<Props> = () => {
-  const { data } = useUsersQuery({ fetchPolicy: 'network-only' })
+  const { data, error } = useUsersQuery({ fetchPolicy: 'network-only' })
+
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
 
   if (!data) {
     return null

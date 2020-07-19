@@ -35,7 +35,12 @@ class UserRepository extends RepositoryBase {
     return !!existingUser
   }
 
-  addUser = async (user: { email: string; password: string }) => {
+  addUser = async (user: {
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+  }) => {
     if (await this.doesUserExist(user.email)) {
       throw new Error(`User ${user.email} already exists.`)
     } else {
@@ -43,6 +48,7 @@ class UserRepository extends RepositoryBase {
         `
           CREATE
             (user :User { userId: $userId, email: $email,
+              firstName: $firstName, lastName: $lastName,
             password: $password, signupDateTime: $signupDateTime })
           RETURN user
           `,

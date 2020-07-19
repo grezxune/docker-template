@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { useRegisterMutation } from '../../generated/graphql'
+import { useSignUpMutation } from '../../generated/graphql'
 import { Button, makeStyles, TextField } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -14,17 +14,21 @@ const useStyles = makeStyles((theme) => ({
 export const SignUpForm: React.FC<RouteComponentProps> = ({ history }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [register] = useRegisterMutation()
+  const [signUp] = useSignUpMutation()
   const classes = useStyles()
 
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault()
-        const response = await register({
+        const response = await signUp({
           variables: {
-            email,
-            password,
+            input: {
+              firstName: '',
+              lastName: '',
+              email,
+              password,
+            },
           },
         })
 

@@ -27,7 +27,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export const Login: React.FC<RouteComponentProps> = (props) => {
-  const [currentTab, setCurrentTab] = useState(0)
+  // @ts-ignore
+  const initialTabIndex = parseInt(props.match.params?.tabIndex, 10) || 0
+  const [currentTab, setCurrentTab] = useState(
+    [0, 1].includes(initialTabIndex) ? initialTabIndex : 0
+  )
   const classes = useStyles()
 
   const changeTab = (event: React.ChangeEvent<{}>, newValue: any) => {

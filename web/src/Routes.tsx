@@ -18,7 +18,8 @@ export const Routes = () => {
             exact={true}
           />
           <Route path="/register" component={Register} exact={true} />
-          <Route path="/login" component={Login} exact={true} />
+          <Route path="/auth/:tabIndex" component={Login} exact={true} />
+          <Route path="/auth" component={Login} exact={true} />
           <Route path="/" component={Home} exact={true} />
           <Route path="/" component={NotFound} />
         </Switch>

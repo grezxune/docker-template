@@ -69,13 +69,13 @@ export default ({
             <ListItemIcon>
               <Person />
             </ListItemIcon>
-            <ListItemText primary={'Logout'} />
+            <ListItemText primary={'Sign Out'} />
           </ListItem>
         </>
       ) : (
         <>
-          <ListItemLink icon={<ExitToApp />} primary={'Login'} to="/login" />
-          <ListItemLink icon={<Home />} primary={'Register'} to="/register" />
+          <ListItemLink icon={<ExitToApp />} primary={'Sign In'} to="/auth" />
+          <ListItemLink icon={<Home />} primary={'Sign Up'} to="/auth/1" />
         </>
       )}
     </List>

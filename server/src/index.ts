@@ -3,13 +3,17 @@ import 'reflect-metadata'
 import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from 'type-graphql'
-import { UserResolver, UserFieldResolvers } from './resolvers/UserResolver'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { verify } from 'jsonwebtoken'
+import jwt from 'express-jwt'
+
 import { createAccessToken, createRefreshToken } from './utils/auth'
+import { UserResolver, UserFieldResolvers } from './resolvers/UserResolver'
 import { sendRefreshToken } from './utils/sendRefreshToken'
 import { userRepository } from './repositories'
+import { MyContext } from './MyContext'
+import { authChecker } from './utils/authChecker'
 ;(async () => {
   const app = express()
   app.use(
@@ -50,13 +54,23 @@ import { userRepository } from './repositories'
     return res.send({ ok: true, accessToken: createAccessToken(user) })
   })
 
+  app.use(
+    jwt({
+      secret: process.env.ACCESS_TOKEN_SECRET!,
+      algorithms: ['HS256'],
+      credentialsRequired: false,
+    })
+  )
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver, UserFieldResolvers],
+      authChecker,
     }),
-    context: ({ req, res }) => ({
+    context: ({ req, res }: { req: any; res: any }): MyContext => ({
       req,
       res,
+      user: req.user,
     }),
   })
 

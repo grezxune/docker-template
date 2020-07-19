@@ -6,15 +6,15 @@ import {
   ObjectType,
   Field,
   Ctx,
-  UseMiddleware,
   Int,
   FieldResolver,
   Root,
+  InputType,
+  Authorized,
 } from 'type-graphql'
 import { hash, compare } from 'bcryptjs'
 import { MyContext } from '../MyContext'
 import { createAccessToken, createRefreshToken } from '../utils/auth'
-import { isAuth } from '../utils/isAuth'
 import { sendRefreshToken } from '../utils/sendRefreshToken'
 import { verify } from 'jsonwebtoken'
 import { User } from '../models/user'
@@ -38,12 +38,26 @@ export class UserFieldResolvers {
   }
 }
 
+@InputType()
+class SignUpInput {
+  @Field()
+  firstName: string
+
+  @Field()
+  lastName: string
+
+  @Field()
+  email: string
+
+  @Field()
+  password: string
+}
+
 @Resolver()
 export class UserResolver {
   @Query(() => String)
-  @UseMiddleware(isAuth({}))
-  bye(@Ctx() { payload }: MyContext) {
-    return `Your user id is: ${payload!.userId}`
+  bye(@Ctx() { user }: MyContext) {
+    return `Your user id is: ${user!.userId}`
   }
 
   @Query(() => [User])
@@ -104,20 +118,22 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth({}))
+  @Authorized()
   async revokeRefreshTokensForUser(@Arg('userId', () => Int) userId: number) {
     return userRepository.incrementTokenVersion(userId)
   }
 
   @Mutation(() => Boolean)
-  async register(
-    @Arg('email') email: string,
-    @Arg('password') password: string
+  async signUp(
+    @Arg('input') { firstName, lastName, email, password }: SignUpInput
   ) {
+    // TODO - Move this hashing logic to user repo
     const hashedPassword = await hash(password, 12)
 
     try {
       await userRepository.addUser({
+        firstName,
+        lastName,
         email,
         password: hashedPassword,
       })
