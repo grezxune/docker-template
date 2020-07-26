@@ -9,11 +9,13 @@ import { verify } from 'jsonwebtoken'
 import jwt from 'express-jwt'
 
 import { createAccessToken, createRefreshToken } from './utils/auth'
-import { UserResolver, UserFieldResolvers } from './resolvers/UserResolver'
+// import { UserResolver } from './resolvers/UserResolver'
 import { sendRefreshToken } from './utils/sendRefreshToken'
 import { userRepository } from './repositories'
 import { MyContext } from './MyContext'
 import { authChecker } from './utils/authChecker'
+import { resolvers } from './schema'
+console.log('Resolvers:\n', resolvers)
 ;(async () => {
   const app = express()
   app.use(
@@ -64,7 +66,8 @@ import { authChecker } from './utils/authChecker'
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, UserFieldResolvers],
+      // @ts-ignore
+      resolvers,
       authChecker,
     }),
     context: ({ req, res }: { req: any; res: any }): MyContext => ({

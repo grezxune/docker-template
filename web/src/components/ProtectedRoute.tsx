@@ -27,7 +27,7 @@ export const ProtectedRoute: React.FC<RouteProps> = (props) => {
 
   console.log('In protected route...', props)
   if (!data?.viewer) {
-    const renderComponent = () => <Redirect to={{ pathname: '/login' }} />
+    const renderComponent = () => <Redirect to={{ pathname: '/auth' }} />
     return <Route {...props} component={renderComponent} render={undefined} />
   } else {
     return <Route {...props} />

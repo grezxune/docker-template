@@ -1,7 +1,6 @@
 import { query } from './db/neo4j/query'
-import { User } from './models/user'
 
-export class RepositoryBase {
+export class RepositoryBase<Type> {
   labels: string[]
   optionalLabels?: string[]
   primaryLabel: string
@@ -23,7 +22,7 @@ export class RepositoryBase {
 
   getLabels = (): string => `:${this.labels.join(' :')}`
 
-  getAll = async (): Promise<User[]> => {
+  getAll = async (): Promise<Type[]> => {
     const response = await query(
       `MATCH (node ${this.getLabels()}) RETURN node, LABELS(node) as labels`,
       {}
@@ -32,7 +31,7 @@ export class RepositoryBase {
     return response.map((item: any) => ({ ...item.node, labels: item.labels }))
   }
 
-  getById = async (id: string): Promise<User | null> => {
+  getById = async (id: string): Promise<Type | null> => {
     const response = (await query(
       `MATCH (node ${this.getLabels()} { ${
         this.primaryKey

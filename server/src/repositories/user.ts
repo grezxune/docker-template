@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { RepositoryBase } from '../repositoryBase'
 import { query } from '../db/neo4j/query'
 import { compare } from 'bcryptjs'
-import { User } from '../models/user'
+import { User } from '../schema/user/User'
 import { createAccessToken } from '../utils/auth'
 
-class UserRepository extends RepositoryBase {
+class UserRepository extends RepositoryBase<User> {
   constructor() {
     super(['User'], 'User')
   }

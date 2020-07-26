@@ -7,6 +7,8 @@ import {
   Hidden,
   Link,
   makeStyles,
+  ButtonGroup,
+  Button,
 } from '@material-ui/core'
 import { Menu } from '@material-ui/icons'
 import MenuDrawer from './MenuDrawer'
@@ -49,14 +51,16 @@ export const Header = () => {
             <Menu />
           </IconButton>
           {/* </Hidden> */}
-          <Link
-            href="/"
-            variant={'button'}
-            color={'secondary'}
-            className={classes.button}
-          >
-            BitBelt
-          </Link>
+          <Button>
+            <Link
+              href="/"
+              variant={'button'}
+              color={'secondary'}
+              className={classes.button}
+            >
+              BitBelt
+            </Link>
+          </Button>
           <div
             style={{
               display: 'flex',
@@ -66,23 +70,18 @@ export const Header = () => {
           >
             {!data?.viewer ? (
               <>
-                <Link
-                  href="/auth"
-                  variant={'button'}
-                  color={'secondary'}
-                  className={classes.button}
-                >
-                  Sign In
-                </Link>
-                <span>|</span>
-                <Link
-                  href="/auth/1"
-                  variant={'button'}
-                  color={'secondary'}
-                  className={classes.button}
-                >
-                  Sign Up
-                </Link>
+                <ButtonGroup color={'secondary'} variant={'text'}>
+                  <Button>
+                    <Link href="/auth" variant={'button'} color={'secondary'}>
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button>
+                    <Link href="/auth/1" variant={'button'} color={'secondary'}>
+                      Sign Up
+                    </Link>
+                  </Button>
+                </ButtonGroup>
               </>
             ) : (
               <>
