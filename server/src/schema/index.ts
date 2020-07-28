@@ -1,18 +1,8 @@
-import { Login } from './auth/mutations/Login'
-import { Logout } from './auth/mutations/Logout'
-import { RevokeRefreshToken } from './auth/mutations/RevokeRefreshToken'
-import { SignUp } from './auth/mutations/SignUp'
+export * from './auth/mutations/Login'
+export * from './auth/mutations/Logout'
+export * from './auth/mutations/RevokeRefreshToken'
+export * from './auth/mutations/SignUp'
 
-import { AllUsers } from './user/queries/AllUsers'
-import { Viewer } from './user/queries/Viewer'
-import { User } from './user/User'
-
-export const resolvers = [
-  Login,
-  Logout,
-  RevokeRefreshToken,
-  SignUp,
-  AllUsers,
-  Viewer,
-  User,
-]
+export * from './user/queries/AllUsers'
+export * from './user/queries/Viewer'
+export * from './user/User'
